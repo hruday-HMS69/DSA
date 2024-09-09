@@ -14,24 +14,34 @@ class Solution {
         for (var row : ans) {
             Arrays.fill(row, -1);
         }
-        int i = 0, j = 0, k = 0;
-        final int[] dirs = {0, 1, 0, -1, 0};
-        while (true) {
-            ans[i][j] = head.val;
-            head = head.next;
-            if (head == null) {
-                break;
-            }
-            while (true) {
-                int x = i + dirs[k], y = j + dirs[k + 1];
-                if (x >= 0 && x < m && y >= 0 && y < n && ans[x][y] == -1) {
-                    i = x;
-                    j = y;
-                    break;
-                }
-                k = (k + 1) % 4;
+        
+        int i = 0, j = 0; // Initial position in the matrix
+        // Directions represent right, down, left, and up movements
+        final int[] dirs = {0, 1, 1, 0, 0, -1, -1, 0};
+        int dirIndex = 0; // Index to determine current direction
+
+        while (head != null) {
+            ans[i][j] = head.val; // Assign value from the linked list
+            head = head.next; // Move to the next node in the list
+            
+            // Calculate next position
+            int nextI = i + dirs[dirIndex * 2];
+            int nextJ = j + dirs[dirIndex * 2 + 1];
+
+            // Check if the next position is valid and unvisited
+            if (nextI >= 0 && nextI < m && nextJ >= 0 && nextJ < n && ans[nextI][nextJ] == -1) {
+                // If valid, update position
+                i = nextI;
+                j = nextJ;
+            } else {
+                // If invalid, change direction (turn clockwise)
+                dirIndex = (dirIndex + 1) % 4;
+                // Update position to the new direction
+                i += dirs[dirIndex * 2];
+                j += dirs[dirIndex * 2 + 1];
             }
         }
-        return ans;
+        
+        return ans; // Return filled matrix
     }
 }
