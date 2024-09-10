@@ -15,14 +15,18 @@
 //   }
 // }
 impl Solution {
-    pub fn reverse_list(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
-        let mut head = head;
-        let mut pre = None;
-        while let Some(mut node) = head {
-            head = node.next.take();
-            node.next = pre.take();
-            pre = Some(node);
+    fn rev(pre: Option<Box<ListNode>>, cur: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        match cur {
+            None => pre,
+            Some(mut node) => {
+                let next = node.next;
+                node.next = pre;
+                Self::rev(Some(node), next)
+            }
         }
-        pre
+    }
+
+    pub fn reverse_list(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        Self::rev(None, head)
     }
 }
