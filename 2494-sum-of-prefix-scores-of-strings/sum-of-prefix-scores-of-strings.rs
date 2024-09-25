@@ -10,42 +10,57 @@ impl Solution {
     }
 }
 
+struct TrieNode {
+    children: [Option<Box<TrieNode>>; 26],
+    score: i32,
+}
+
+impl TrieNode {
+    fn new() -> Self {
+        TrieNode {
+            children: Default::default(),  // Create an array of `None`
+            score: 0,
+        }
+    }
+}
+
 struct Trie {
-    nodes: Vec<Vec<i32>>,
+    root: TrieNode,
 }
 
 impl Trie {
     fn new() -> Self {
-        let mut nodes = Vec::new();
-        nodes.push(vec![0; 26]); 
-        Trie { nodes }
-    }
-
-    fn insert(&mut self, s: &String) {
-        let mut curr = 0;
-        for c in s.chars() {
-            let index = (c as usize) - ('a' as usize);
-            if self.nodes[curr][index] == 0 {
-                self.nodes[curr][index] = self.create_node() as i32;
-            }
-            curr = self.nodes[curr][index] as usize;
-            self.nodes[curr][26] += 1; 
+        Trie {
+            root: TrieNode::new(),
         }
     }
 
-    fn query(&self, s: &String) -> i32 {
-        let mut result = 0;
-        let mut curr = 0;
+    fn insert(&mut self, s: &str) {
+        let mut curr = &mut self.root;
+        
         for c in s.chars() {
             let index = (c as usize) - ('a' as usize);
-            curr = self.nodes[curr][index] as usize;
-            result += self.nodes[curr][26]; 
+            if curr.children[index].is_none() {
+                curr.children[index] = Some(Box::new(TrieNode::new()));
+            }
+            curr = curr.children[index].as_mut().unwrap();
+            curr.score += 1;
+        }
+    }
+
+    fn query(&self, s: &str) -> i32 {
+        let mut result = 0;
+        let mut curr = &self.root;
+        
+        for c in s.chars() {
+            let index = (c as usize) - ('a' as usize);
+            if let Some(node) = &curr.children[index] {
+                result += node.score;
+                curr = node;
+            } else {
+                break;
+            }
         }
         result
-    }
-
-    fn create_node(&mut self) -> usize {
-        self.nodes.push(vec![0; 27]); 
-        self.nodes.len() - 1
     }
 }
