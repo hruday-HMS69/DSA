@@ -1,26 +1,24 @@
 class Solution {
     public boolean canReach(String s, int minJump, int maxJump) {
         int n = s.length();
+        if (s.charAt(n - 1) == '1') return false;
+        
         boolean[] dp = new boolean[n];
         dp[0] = true;
         
-        int[] prefixSum = new int[n]; 
-        prefixSum[0] = 1; 
-        
+        int countReachable = 0; 
         for (int i = 1; i < n; i++) {
-            if (s.charAt(i) == '0') {
-                int left = Math.max(0, i - maxJump);
-                int right = i - minJump;
-                
-                if (right >= 0) {
-                    int reachableCount = prefixSum[right] - (left > 0 ? prefixSum[left - 1] : 0);
-                    if (reachableCount > 0) {
-                        dp[i] = true;
-                    }
-                }
+            if (i - minJump >= 0 && dp[i - minJump]) {
+                countReachable++;
             }
             
-            prefixSum[i] = prefixSum[i - 1] + (dp[i] ? 1 : 0);
+            if (i - maxJump - 1 >= 0 && dp[i - maxJump - 1]) {
+                countReachable--;
+            }
+            
+            if (s.charAt(i) == '0' && countReachable > 0) {
+                dp[i] = true;
+            }
         }
         
         return dp[n - 1];
