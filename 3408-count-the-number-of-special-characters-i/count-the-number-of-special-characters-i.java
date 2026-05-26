@@ -1,24 +1,22 @@
-import java.util.*;
-
 class Solution {
     public int numberOfSpecialChars(String word) {
 
-        Set<Character> lowerSet = new HashSet<>();
-        Set<Character> upperSet = new HashSet<>();
+        boolean[] lower = new boolean[26];
+        boolean[] upper = new boolean[26];
 
         for (char ch : word.toCharArray()) {
 
             if (Character.isLowerCase(ch)) {
-                lowerSet.add(ch);
+                lower[ch - 'a'] = true;
             } else {
-                upperSet.add(Character.toLowerCase(ch));
+                upper[ch - 'A'] = true;
             }
         }
 
         int count = 0;
 
-        for (char ch : lowerSet) {
-            if (upperSet.contains(ch)) {
+        for (int i = 0; i < 26; i++) {
+            if (lower[i] && upper[i]) {
                 count++;
             }
         }
