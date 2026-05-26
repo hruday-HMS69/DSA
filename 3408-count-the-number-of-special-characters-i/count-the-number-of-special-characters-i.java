@@ -1,13 +1,24 @@
+import java.util.*;
+
 class Solution {
     public int numberOfSpecialChars(String word) {
+
+        Set<Character> lowerSet = new HashSet<>();
+        Set<Character> upperSet = new HashSet<>();
+
+        for (char ch : word.toCharArray()) {
+
+            if (Character.isLowerCase(ch)) {
+                lowerSet.add(ch);
+            } else {
+                upperSet.add(Character.toLowerCase(ch));
+            }
+        }
+
         int count = 0;
 
-        for (char ch = 'a'; ch <= 'z'; ch++) {
-            char lower = ch;
-            char upper = Character.toUpperCase(ch);
-
-            if (word.indexOf(lower) != -1 &&
-                word.indexOf(upper) != -1) {
+        for (char ch : lowerSet) {
+            if (upperSet.contains(ch)) {
                 count++;
             }
         }
