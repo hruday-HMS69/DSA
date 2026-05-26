@@ -1,26 +1,18 @@
 class Solution {
     public int numberOfSpecialChars(String word) {
-
-        boolean[] lower = new boolean[26];
-        boolean[] upper = new boolean[26];
-
-        for (char ch : word.toCharArray()) {
-
-            if (Character.isLowerCase(ch)) {
-                lower[ch - 'a'] = true;
+        int lowerMask = 0;
+        int upperMask = 0;
+        
+        for (char c : word.toCharArray()) {
+            if (c >= 'a' && c <= 'z') {
+                lowerMask |= 1 << (c - 'a');
             } else {
-                upper[ch - 'A'] = true;
+                upperMask |= 1 << (c - 'A');
             }
         }
-
-        int count = 0;
-
-        for (int i = 0; i < 26; i++) {
-            if (lower[i] && upper[i]) {
-                count++;
-            }
-        }
-
-        return count;
+        
+        int common = lowerMask & upperMask;
+        
+        return Integer.bitCount(common);
     }
 }
