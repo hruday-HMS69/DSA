@@ -1,18 +1,24 @@
 impl Solution {
     pub fn sequential_digits(low: i32, high: i32) -> Vec<i32> {
-        let nums = [
-            12,23,34,45,56,67,78,89,
-            123,234,345,456,567,678,789,
-            1234,2345,3456,4567,5678,6789,
-            12345,23456,34567,45678,56789,
-            123456,234567,345678,456789,
-            1234567,2345678,3456789,
-            12345678,23456789,
-            123456789,
-        ];
+        let s = b"123456789";
+        let mut ans = Vec::new();
 
-        nums.into_iter()
-            .filter(|&x| x >= low && x <= high)
-            .collect()
+        let low_len = low.to_string().len();
+        let high_len = high.to_string().len().min(9);
+
+        for len in low_len..=high_len {
+            for start in 0..=(9 - len) {
+                let num = std::str::from_utf8(&s[start..start + len])
+                    .unwrap()
+                    .parse::<i32>()
+                    .unwrap();
+
+                if num >= low && num <= high {
+                    ans.push(num);
+                }
+            }
+        }
+
+        ans
     }
 }
