@@ -7,51 +7,26 @@ impl Solution {
             suffix[i] = suffix[i + 1] + piles[i];
         }
 
-        let mut dp = vec![vec![-1; n + 1]; n + 1];
+        let mut dp = vec![vec![0; n + 1]; n + 1];
 
-        fn solve(
-            i: usize,
-            m: usize,
-            n: usize,
-            suffix: &Vec<i32>,
-            dp: &mut Vec<Vec<i32>>,
-        ) -> i32 {
-            if i >= n {
-                return 0;
-            }
-
-            if dp[i][m] != -1 {
-                return dp[i][m];
-            }
-
-            if i + 2 * m >= n {
-                dp[i][m] = suffix[i];
-                return suffix[i];
-            }
-
-            let mut best = 0;
-
-            for x in 1..=2 * m {
-                if i + x > n {
-                    break;
+        for i in (0..n).rev() {
+            for m in (1..=n).rev() {
+                if i + 2 * m >= n {
+                    dp[i][m] = suffix[i];
+                    continue;
                 }
 
-                let opponent = solve(
-                    i + x,
-                    m.max(x),
-                    n,
-                    suffix,
-                    dp,
-                );
+                for x in 1..=2 * m {
+                    let next = i + x;
+                    let next_m = m.max(x);
 
-                let current = suffix[i] - opponent;
-                best = best.max(current);
+                    dp[i][m] = dp[i][m].max(
+                        suffix[i] - dp[next][next_m]
+                    );
+                }
             }
-
-            dp[i][m] = best;
-            best
         }
 
-        solve(0, 1, n, &suffix, &mut dp)
+        dp[0][1]
     }
 }
